@@ -28,9 +28,6 @@ class ContactListViewController: UIViewController {
         
         self.view.addSubview(contactListCollectionView)
         
-        contactListCollectionView.populateData()
-        contactListCollectionView.reloadData()
-        
         prepareNavBar()
     }
     
@@ -47,28 +44,26 @@ class ContactListViewController: UIViewController {
         ])
     }
     
-    // parsing local json
+    // parsing data from json
     func displayContactList() {
-        let path = Bundle.main.path(forResource: "data" , ofType: "json")
-        let url = URL(fileURLWithPath: path ?? "Check path variable")
         
+        let documentsURL = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first
+        let destURL = documentsURL!.appendingPathComponent("data").appendingPathExtension("json")
         var contactListEntity = [ContactsEntity]()
-        
         do {
-            let data = try Data(contentsOf: url)
+            let data = try Data(contentsOf: destURL)
             let contactsModel = try JSONDecoder().decode([ContactsModel].self, from: data)
-            
             for contact in contactsModel {
-                
                 let contactEntity = ContactsEntity.init(id: contact.id ?? "", firstName: contact.firstName ?? "", lastName: contact.lastName ?? "", email: contact.email ?? "", phone: contact.phone ?? "")
-                
                 contactListEntity.append(contactEntity)
             }
-            
             Global.dataFactory.setContactsEntity(contactListEntity)
         } catch {
             print("try block error: \(error)")
         }
+        
+        contactListCollectionView.populateData()
+        contactListCollectionView.reloadData()
     }
     
     private func prepareNavBar() {
@@ -79,15 +74,17 @@ class ContactListViewController: UIViewController {
     }
     
     @objc func addBtnTapped() {
-        Global.dataFactory.setSelectedContactEntity(nil)
-        
-        push(controller: EditContactViewController())
+        self.goToEditContact(nil)
     }
 
-    func goToEditContact(_ contactEnity: ContactsEntity) {
+    func goToEditContact(_ contactEnity: ContactsEntity?) {
         Global.dataFactory.setSelectedContactEntity(contactEnity)
         
-        push(controller: EditContactViewController())
+        let editController =  EditContactViewController()
+        editController.saveCompletion = {
+            self.displayContactList()
+        }
+        push(controller: editController)
     }
     
 }

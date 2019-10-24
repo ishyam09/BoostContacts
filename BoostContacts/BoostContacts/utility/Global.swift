@@ -38,6 +38,7 @@ class Global {
                 result.append(ch)
             }
         }
+        
         return result
     }
     
@@ -45,12 +46,15 @@ class Global {
     func copyFileToDocumentsFolder(nameForFile: String, extForFile: String) {
         let documentsURL = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first
         let destURL = documentsURL!.appendingPathComponent(nameForFile).appendingPathExtension(extForFile)
-        guard let sourceURL = Bundle.main.url(forResource: nameForFile, withExtension: extForFile)
-            else {
+        
+        guard let sourceURL = Bundle.main.url(forResource: nameForFile, withExtension: extForFile) else {
                 print("Source File not found.")
+            
                 return
         }
+        
         let fileManager = FileManager.default
+        
         do {
             try fileManager.copyItem(at: sourceURL, to: destURL)
         } catch {

@@ -10,6 +10,8 @@ import UIKit
 
 class EditContactViewController: UIViewController {
     
+    var saveCompletion : (() -> Void)?
+    
     private let editContactView = EditContactView()
     
     lazy var viewModel : ContactEditViewModel = {
@@ -17,12 +19,15 @@ class EditContactViewController: UIViewController {
     }()
     
     var saveContact: SaveContact?
+    
     var isContactExist:Bool = false
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
         prepareNavBar()
+        
+        self.isContactExist = true
         
         self.view.addSubview(editContactView)
     }
@@ -73,7 +78,7 @@ class EditContactViewController: UIViewController {
 }
 
 
-extension EditContactViewController: ContactEditViewModelDelegate {
+extension EditContactViewController {
     
     func validateTextFields() {
         
@@ -101,18 +106,13 @@ extension EditContactViewController: ContactEditViewModelDelegate {
             return
         }
         
-        if ((firstName.isEmpty || lastName.isEmpty || email.isEmpty) || (firstName.hasPrefix(" ") || lastName.hasPrefix(" ") || email.hasPrefix(" ")) || email.isValidEmail == false) {
-            let alert = UIAlertController(title: "Alert", message: "First Name or Last Name is empty or Invalid email", preferredStyle: .alert)
+        if (firstName.isEmpty || lastName.isEmpty) || (firstName.hasPrefix(" ") || lastName.hasPrefix(" ")) {
+            let alert = UIAlertController(title: "Alert", message: "First Name or Last Name is empty", preferredStyle: .alert)
             alert.addAction(UIAlertAction(title: "Okay", style: .default, handler: nil))
             self.present(alert, animated: true)
         } else {
-            
-            if self.isContactExist == false {
-                self.saveContact = SaveContact()
-                self.saveContact?.id = Global.shared.randomString(length: 24)
-            }
-            
             self.saveContact = SaveContact()
+            
             if editContactView.item.contactId.count == 0 {
                 isContactExist = false
                 self.saveContact?.id = Global.shared.randomString(length: 24)
@@ -122,33 +122,32 @@ extension EditContactViewController: ContactEditViewModelDelegate {
             
             self.saveContact?.firstName = firstName
             self.saveContact?.lastName = lastName
-            self.saveContact?.email = email
-            self.saveContact?.phone = Global.shared.formattedNumber(number: phone)
             
-            viewModel.saveContacts(fileName: "data", contactObj: self.saveContact ?? SaveContact() , isExist: isContactExist)
+            if email.isValidEmail != false {
+                self.saveContact?.email = email
+            }
+            
+            self.saveContact?.phone = phone
+            
+            self.viewModel.saveContacts(fileName: "data", contactObj: self.saveContact ?? SaveContact() , isExist: isContactExist)
+            
+            if let saveComp = saveCompletion{
+                saveComp()
+            }
             
             pop()
         }
     }
     
-    func fetchEditSuccessfull(contactList: [SaveContact]) {
-        print("Successfully saved contact")
-    }
-    
-}
-
-protocol ContactEditViewModelDelegate {
-    func fetchEditSuccessfull(contactList : [SaveContact])
 }
 
 class ContactEditViewModel: NSObject {
-    var delegate : ContactEditViewModelDelegate?
     
     func find(value searchValue: SaveContact, in array: [SaveContact]) -> Int?
     {
         for (index, value) in array.enumerated()
         {
-            if value.id==searchValue.id {
+            if value.id == searchValue.id {
                 return index
             }
         }
@@ -156,44 +155,40 @@ class ContactEditViewModel: NSObject {
         return nil
     }
     
-    //MARK:- Save Data into local JSON file
     func saveContacts(fileName: String, contactObj: SaveContact, isExist: Bool) {
         let documentsURL = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first
         let destURL = documentsURL!.appendingPathComponent(fileName).appendingPathExtension("json").standardizedFileURL
+        
         do {
             let data = try Data(contentsOf: destURL)
             let decoder = JSONDecoder()
             var jsonData = try decoder.decode([SaveContact].self, from: data) as [SaveContact]
-            if isExist{
-                if let index = find(value: contactObj, in: jsonData){
+            if isExist {
+                if let index = find(value: contactObj, in: jsonData) {
                     print("Contact index is \(index)")
                     jsonData[index] = contactObj
                 }
-            }
-            else{
+            } else {
                 jsonData.append(contactObj)
             }
             
-            SaveToFile(contactList: jsonData, fileName: fileName)
-            
-            self.delegate?.fetchEditSuccessfull(contactList: jsonData)
+            saveToFile(contactList: jsonData, fileName: fileName)
             
         } catch {
             print("error:\(error)")
         }
     }
     
-    func SaveToFile(contactList:[SaveContact], fileName: String){
+    func saveToFile(contactList:[SaveContact], fileName: String) {
         
-        //if let fileURL = Bundle.main.url(forResource: "data", withExtension: "json") {
         let documentsURL = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first
         let destURL = documentsURL!.appendingPathComponent(fileName).appendingPathExtension("json")
+        
         do {
             let encoder = JSONEncoder()
             let jsonData = try encoder.encode(contactList)
             try jsonData.write(to: destURL)
-        }
-        catch {
+        } catch {
             /* error handling here */
             print("error:\(error)")
         }

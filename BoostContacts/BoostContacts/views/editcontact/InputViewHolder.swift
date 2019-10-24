@@ -24,6 +24,7 @@ class InputViewHolder: UIView, UITextFieldDelegate {
         let lbl = UILabel()
         lbl.font = .boldSystemFont(ofSize: 16)
         lbl.adjustsFontSizeToFitWidth = true
+        lbl.translatesAutoresizingMaskIntoConstraints = false
         
         return lbl
     }()
@@ -33,6 +34,7 @@ class InputViewHolder: UIView, UITextFieldDelegate {
         let lbl = UILabel()
         lbl.font = UIFont.systemFont(ofSize: 14)
         lbl.adjustsFontSizeToFitWidth = true
+        lbl.translatesAutoresizingMaskIntoConstraints = false
         
         return lbl
     }()
@@ -41,6 +43,7 @@ class InputViewHolder: UIView, UITextFieldDelegate {
         let tf = UITextField()
         tf.font = UIFont.systemFont(ofSize: 14)
         tf.borderStyle = .roundedRect
+        tf.translatesAutoresizingMaskIntoConstraints = false
         
         return tf
     }()
@@ -49,6 +52,7 @@ class InputViewHolder: UIView, UITextFieldDelegate {
         let lbl = UILabel()
         lbl.font = UIFont.systemFont(ofSize: 14)
         lbl.adjustsFontSizeToFitWidth = true
+        lbl.translatesAutoresizingMaskIntoConstraints = false
         
         return lbl
     }()
@@ -57,6 +61,7 @@ class InputViewHolder: UIView, UITextFieldDelegate {
         let tf = UITextField()
         tf.font = UIFont.systemFont(ofSize: 14)
         tf.borderStyle = .roundedRect
+        tf.translatesAutoresizingMaskIntoConstraints = false
         
         return tf
     }()
@@ -65,6 +70,7 @@ class InputViewHolder: UIView, UITextFieldDelegate {
         let lbl = UILabel()
         lbl.font = .boldSystemFont(ofSize: 16)
         lbl.adjustsFontSizeToFitWidth = true
+        lbl.translatesAutoresizingMaskIntoConstraints = false
         
         return lbl
     }()
@@ -74,6 +80,7 @@ class InputViewHolder: UIView, UITextFieldDelegate {
         let lbl = UILabel()
         lbl.font = UIFont.systemFont(ofSize: 14)
         lbl.adjustsFontSizeToFitWidth = true
+        lbl.translatesAutoresizingMaskIntoConstraints = false
         
         return lbl
     }()
@@ -82,6 +89,7 @@ class InputViewHolder: UIView, UITextFieldDelegate {
         let tf = UITextField()
         tf.font = UIFont.systemFont(ofSize: 14)
         tf.borderStyle = .roundedRect
+        tf.translatesAutoresizingMaskIntoConstraints = false
         
         return tf
     }()
@@ -90,6 +98,7 @@ class InputViewHolder: UIView, UITextFieldDelegate {
         let lbl = UILabel()
         lbl.font = UIFont.systemFont(ofSize: 14)
         lbl.adjustsFontSizeToFitWidth = true
+        lbl.translatesAutoresizingMaskIntoConstraints = false
         
         return lbl
     }()
@@ -98,6 +107,7 @@ class InputViewHolder: UIView, UITextFieldDelegate {
         let tf = UITextField()
         tf.font = UIFont.systemFont(ofSize: 14)
         tf.borderStyle = .roundedRect
+        tf.translatesAutoresizingMaskIntoConstraints = false
         
         return tf
     }()
@@ -128,26 +138,12 @@ class InputViewHolder: UIView, UITextFieldDelegate {
     func setupConstraints() {
         
         mainTitleHolder.translatesAutoresizingMaskIntoConstraints = false
-        mainTitleLabel.translatesAutoresizingMaskIntoConstraints = false
-        
-        firstNameLabel.translatesAutoresizingMaskIntoConstraints = false
-        firstNameTextField.translatesAutoresizingMaskIntoConstraints = false
         
         separatorView1.translatesAutoresizingMaskIntoConstraints = false
         
-        lastNameLabel.translatesAutoresizingMaskIntoConstraints = false
-        lastNameTextField.translatesAutoresizingMaskIntoConstraints = false
-        
-        subTitleLabel.translatesAutoresizingMaskIntoConstraints = false
         subTitleHolder.translatesAutoresizingMaskIntoConstraints = false
         
-        emailLabel.translatesAutoresizingMaskIntoConstraints = false
-        emailTextField.translatesAutoresizingMaskIntoConstraints = false
-        
         separatorView2.translatesAutoresizingMaskIntoConstraints = false
-        
-        phoneLabel.translatesAutoresizingMaskIntoConstraints = false
-        phoneTextField.translatesAutoresizingMaskIntoConstraints = false
         
         NSLayoutConstraint.activate([
             mainTitleLabel.topAnchor.constraint(equalTo: mainTitleHolder.safeTopAnchor),

@@ -23,11 +23,9 @@ class EditContactView: UIView {
         populateData()
     }
     
-    //private
-    let scrollViewContentSize: CGFloat = 700
+    private let scrollViewContentSize: CGFloat = 700
     
-    //private
-    let scrollView = UIScrollView()
+    private let scrollView = UIScrollView()
     private let container = UIView()
     
     private let profilePicHolder = UIView()
@@ -66,14 +64,11 @@ class EditContactView: UIView {
         scrollView.translatesAutoresizingMaskIntoConstraints = false
         container.translatesAutoresizingMaskIntoConstraints = false
         
-        profilePic.translatesAutoresizingMaskIntoConstraints = false
         profilePicHolder.translatesAutoresizingMaskIntoConstraints = false
         
         inputViewHolder.translatesAutoresizingMaskIntoConstraints = false
         
-        
         NSLayoutConstraint.activate([
-            
             scrollView.topAnchor.constraint(equalTo: safeTopAnchor),
             scrollView.leadingAnchor.constraint(equalTo: safeLeadingAnchor),
             scrollView.trailingAnchor.constraint(equalTo: safeTrailingAnchor),
